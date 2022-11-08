@@ -27,7 +27,8 @@ import {
   GET_PACKING,
   GET_WAYBILLS,
   GET_CERTS,
-} from '../actions/types';
+  GET_SHIPDECS,
+} from "../actions/types";
 
 const initialState = {
   activeAccounts: [],
@@ -43,6 +44,7 @@ const initialState = {
   packingLists: [],
   wayBills: [],
   certificates: [],
+  shipDecs: [],
   loading: false,
   addDataLoading: false,
   dataUpdated: null,
@@ -162,6 +164,12 @@ export const dataReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         certificates: payload,
+      };
+    case GET_SHIPDECS:
+      return {
+        ...state,
+        loading: false,
+        shipDecs: payload,
       };
     case GET_OFFICEMATS:
       return {
