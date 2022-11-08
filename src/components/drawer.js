@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   List,
   ListItemButton,
@@ -13,9 +13,9 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-} from '@mui/material';
-import { styled } from '@mui/material/styles';
-import MuiDrawer from '@mui/material/Drawer';
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import MuiDrawer from "@mui/material/Drawer";
 import {
   PersonRounded,
   Speed,
@@ -37,9 +37,10 @@ import {
   LocalShipping,
   Sell,
   BrandingWatermark,
-} from '@mui/icons-material';
-import { Link } from 'react-router-dom';
-import { getActiveAccs, getPendingAccs } from '../actions/adminActions';
+  FileOpen,
+} from "@mui/icons-material";
+import { Link } from "react-router-dom";
+import { getActiveAccs, getPendingAccs } from "../actions/adminActions";
 
 const drawerWidth = 200;
 
@@ -94,49 +95,49 @@ function MainDrawer() {
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
-  transition: theme.transitions.create('width', {
+  transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
   }),
-  overflowX: 'hidden',
+  overflowX: "hidden",
 });
 
 const closedMixin = (theme) => ({
-  transition: theme.transitions.create('width', {
+  transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  overflowX: 'hidden',
+  overflowX: "hidden",
   width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up('sm')]: {
+  [theme.breakpoints.up("sm")]: {
     width: `calc(${theme.spacing(8)} + 1px)`,
   },
 });
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
+const DrawerHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
 const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== 'open',
+  shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
-  transform: 'translateY(0%)',
+  transform: "translateY(0%)",
   width: drawerWidth,
   flexShrink: 0,
-  whiteSpace: 'nowrap',
-  boxSizing: 'border-box',
+  whiteSpace: "nowrap",
+  boxSizing: "border-box",
   ...(open && {
     ...openedMixin(theme),
-    '& .MuiDrawer-paper': openedMixin(theme),
+    "& .MuiDrawer-paper": openedMixin(theme),
   }),
   ...(!open && {
     ...closedMixin(theme),
-    '& .MuiDrawer-paper': closedMixin(theme),
+    "& .MuiDrawer-paper": closedMixin(theme),
   }),
 }));
 
@@ -150,9 +151,9 @@ const UserDrawer = ({ drawerIn, open, setOpen }) => {
   };
 
   return (
-    <Slide direction='right' in={drawerIn}>
-      <Box sx={{ display: 'flex' }}>
-        <Drawer variant='permanent' open={open}>
+    <Slide direction="right" in={drawerIn}>
+      <Box sx={{ display: "flex" }}>
+        <Drawer variant="permanent" open={open}>
           <DrawerHeader>
             {open ? (
               <IconButton onClick={handleDrawerClose}>
@@ -166,175 +167,175 @@ const UserDrawer = ({ drawerIn, open, setOpen }) => {
           </DrawerHeader>
           <Divider />
           <List>
-            <Link to='/dashboard'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/dashboard">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <Speed />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Dashboard'
+                    primary="Dashboard"
                   />
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link to='/user-samples'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/user-samples">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <Description />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Samples'
+                    primary="Samples"
                   />
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link to='/user-om'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/user-om">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <MapsHomeWork />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Office Materials'
+                    primary="Office Materials"
                   />
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link to='/user-sites'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/user-sites">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <Grass />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Sites'
+                    primary="Sites"
                   />
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link to='/user-vehicles'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/user-vehicles">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <DirectionsCar />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Vehicles'
+                    primary="Vehicles"
                   />
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link to='/user-pcr'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/user-pcr">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <MonetizationOn />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Petty Cash'
+                    primary="Petty Cash"
                   />
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link to='/user-dhl'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/user-dhl">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <Email />
                   </ListItemIcon>
-                  <ListItemText sx={{ opacity: open ? 1 : 0 }} primary='DHL' />
+                  <ListItemText sx={{ opacity: open ? 1 : 0 }} primary="DHL" />
                 </ListItemButton>
               </ListItem>
             </Link>
@@ -361,9 +362,9 @@ const AdminDrawer = ({ drawerIn, open, setOpen }) => {
     dispatch(getPendingAccs());
   }, [dispatch]);
   return (
-    <Slide direction='right' in={drawerIn}>
-      <Box sx={{ display: 'flex' }}>
-        <Drawer variant='permanent' open={open}>
+    <Slide direction="right" in={drawerIn}>
+      <Box sx={{ display: "flex" }}>
+        <Drawer variant="permanent" open={open}>
           <DrawerHeader>
             {open ? (
               <IconButton onClick={handleDrawerClose}>
@@ -377,91 +378,91 @@ const AdminDrawer = ({ drawerIn, open, setOpen }) => {
           </DrawerHeader>
           <Divider />
           <List>
-            <Link to='/dashboard-admin'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/dashboard-admin">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <Speed />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Dashboard'
+                    primary="Dashboard"
                   />
                 </ListItemButton>
               </ListItem>
             </Link>
-            <ListItem disablePadding sx={{ display: 'block' }}>
+            <ListItem disablePadding sx={{ display: "block" }}>
               <Accordion
                 sx={{
                   minWidth: 0,
-                  mr: open ? 'auto' : 6,
-                  justifyContent: 'center',
+                  mr: open ? "auto" : 6,
+                  justifyContent: "center",
                 }}
-                className='p-0 shadow-none w-full bg-slate-400'
+                className="p-0 shadow-none w-full bg-slate-400"
               >
                 <AccordionSummary
                   sx={{
-                    display: open ? '' : 'block',
+                    display: open ? "" : "block",
                   }}
                   expandIcon={open ? <ExpandMore /> : null}
-                  className='p-0 w-full'
+                  className="p-0 w-full"
                 >
                   <ListItemButton
                     sx={{
                       minHeight: 48,
-                      justifyContent: open ? 'initial' : 'center',
+                      justifyContent: open ? "initial" : "center",
                       px: 2.5,
                     }}
                   >
                     <ListItemIcon
                       sx={{
                         minWidth: 0,
-                        mr: open ? 3 : 'auto',
-                        justifyContent: 'center',
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
                       }}
                     >
                       <People />
                     </ListItemIcon>
                     <ListItemText
                       sx={{ opacity: open ? 1 : 0 }}
-                      primary='Accounts'
+                      primary="Accounts"
                     />
                   </ListItemButton>
                 </AccordionSummary>
-                <AccordionDetails className='p-0 bg-slate-300'>
-                  <Link to='/pending-accounts'>
-                    <ListItem disablePadding sx={{ display: 'block' }}>
+                <AccordionDetails className="p-0 bg-slate-300">
+                  <Link to="/pending-accounts">
+                    <ListItem disablePadding sx={{ display: "block" }}>
                       <ListItemButton
                         sx={{
                           minHeight: 48,
-                          justifyContent: open ? 'initial' : 'center',
+                          justifyContent: open ? "initial" : "center",
                           px: 2.5,
                         }}
                       >
                         <ListItemIcon
                           sx={{
                             minWidth: 0,
-                            mr: open ? 3 : 'auto',
-                            justifyContent: 'center',
+                            mr: open ? 3 : "auto",
+                            justifyContent: "center",
                           }}
                         >
                           <ManageAccounts />
                         </ListItemIcon>
                         <ListItemText
                           sx={{ opacity: open ? 1 : 0 }}
-                          primary='Pending Accounts'
+                          primary="Pending Accounts"
                           primaryTypographyProps={{
                             fontSize: 13,
                           }}
@@ -469,27 +470,27 @@ const AdminDrawer = ({ drawerIn, open, setOpen }) => {
                       </ListItemButton>
                     </ListItem>
                   </Link>
-                  <Link to='/active-accounts'>
-                    <ListItem disablePadding sx={{ display: 'block' }}>
+                  <Link to="/active-accounts">
+                    <ListItem disablePadding sx={{ display: "block" }}>
                       <ListItemButton
                         sx={{
                           minHeight: 48,
-                          justifyContent: open ? 'initial' : 'center',
+                          justifyContent: open ? "initial" : "center",
                           px: 2.5,
                         }}
                       >
                         <ListItemIcon
                           sx={{
                             minWidth: 0,
-                            mr: open ? 3 : 'auto',
-                            justifyContent: 'center',
+                            mr: open ? 3 : "auto",
+                            justifyContent: "center",
                           }}
                         >
                           <PersonRounded />
                         </ListItemIcon>
                         <ListItemText
                           sx={{ opacity: open ? 1 : 0 }}
-                          primary='Active Accounts'
+                          primary="Active Accounts"
                           primaryTypographyProps={{
                             fontSize: 13,
                           }}
@@ -500,188 +501,188 @@ const AdminDrawer = ({ drawerIn, open, setOpen }) => {
                 </AccordionDetails>
               </Accordion>
             </ListItem>
-            <Link to='/admin-samples'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/admin-samples">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <Description />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Samples'
+                    primary="Samples"
                   />
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link to='/admin-om'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/admin-om">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <MapsHomeWork />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Office Materials'
+                    primary="Office Materials"
                   />
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link to='/admin-sites'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/admin-sites">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <Grass />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Sites'
+                    primary="Sites"
                   />
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link to='/admin-cupping'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/admin-cupping">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <LocalCafe />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Cupping'
+                    primary="Cupping"
                   />
                 </ListItemButton>
               </ListItem>
             </Link>
-            <ListItem disablePadding sx={{ display: 'block' }}>
+            <ListItem disablePadding sx={{ display: "block" }}>
               <ListItemButton
                 sx={{
                   minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
+                  justifyContent: open ? "initial" : "center",
                   px: 2.5,
                 }}
               >
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
                   }}
                 >
                   <DirectionsCar />
                 </ListItemIcon>
                 <ListItemText
                   sx={{ opacity: open ? 1 : 0 }}
-                  primary='Vehicles'
+                  primary="Vehicles"
                 />
               </ListItemButton>
             </ListItem>
             <Accordion
               sx={{
                 minWidth: 0,
-                mr: open ? 'auto' : 6,
-                justifyContent: 'center',
+                mr: open ? "auto" : 6,
+                justifyContent: "center",
               }}
-              className='p-0 shadow-none w-full h-fit'
+              className="p-0 shadow-none w-full h-fit"
             >
               <AccordionSummary
                 sx={{
-                  display: open ? '' : 'block',
+                  display: open ? "" : "block",
                 }}
                 expandIcon={open ? <ExpandMore /> : null}
-                className='p-0 w-full h-fit'
+                className="p-0 w-full h-fit"
               >
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <MonetizationOn />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Petty Cash'
+                    primary="Petty Cash"
                   />
                 </ListItemButton>
               </AccordionSummary>
-              <AccordionDetails className='p-0 bg-slate-300'>
-                <Link to='/approved-pcr'>
-                  <ListItem disablePadding sx={{ display: 'block' }}>
+              <AccordionDetails className="p-0 bg-slate-300">
+                <Link to="/approved-pcr">
+                  <ListItem disablePadding sx={{ display: "block" }}>
                     <ListItemButton
                       sx={{
                         minHeight: 48,
-                        justifyContent: open ? 'initial' : 'center',
+                        justifyContent: open ? "initial" : "center",
                         px: 2.5,
                       }}
                     >
                       <ListItemIcon
                         sx={{
                           minWidth: 0,
-                          mr: open ? 3 : 'auto',
-                          justifyContent: 'center',
+                          mr: open ? 3 : "auto",
+                          justifyContent: "center",
                         }}
                       >
                         <PriceCheck />
                       </ListItemIcon>
                       <ListItemText
                         sx={{ opacity: open ? 1 : 0 }}
-                        primary='Approved Requests'
+                        primary="Approved Requests"
                         primaryTypographyProps={{
                           fontSize: 13,
                         }}
@@ -689,27 +690,27 @@ const AdminDrawer = ({ drawerIn, open, setOpen }) => {
                     </ListItemButton>
                   </ListItem>
                 </Link>
-                <Link to='/pending-pcr'>
-                  <ListItem disablePadding sx={{ display: 'block' }}>
+                <Link to="/pending-pcr">
+                  <ListItem disablePadding sx={{ display: "block" }}>
                     <ListItemButton
                       sx={{
                         minHeight: 48,
-                        justifyContent: open ? 'initial' : 'center',
+                        justifyContent: open ? "initial" : "center",
                         px: 2.5,
                       }}
                     >
                       <ListItemIcon
                         sx={{
                           minWidth: 0,
-                          mr: open ? 3 : 'auto',
-                          justifyContent: 'center',
+                          mr: open ? 3 : "auto",
+                          justifyContent: "center",
                         }}
                       >
                         <HourglassTop />
                       </ListItemIcon>
                       <ListItemText
                         sx={{ opacity: open ? 1 : 0 }}
-                        primary='Pending Requests'
+                        primary="Pending Requests"
                         primaryTypographyProps={{
                           fontSize: 13,
                         }}
@@ -719,24 +720,24 @@ const AdminDrawer = ({ drawerIn, open, setOpen }) => {
                 </Link>
               </AccordionDetails>
             </Accordion>
-            <ListItem disablePadding sx={{ display: 'block' }}>
+            <ListItem disablePadding sx={{ display: "block" }}>
               <ListItemButton
                 sx={{
                   minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
+                  justifyContent: open ? "initial" : "center",
                   px: 2.5,
                 }}
               >
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
                   }}
                 >
                   <Email />
                 </ListItemIcon>
-                <ListItemText sx={{ opacity: open ? 1 : 0 }} primary='DHL' />
+                <ListItemText sx={{ opacity: open ? 1 : 0 }} primary="DHL" />
               </ListItemButton>
             </ListItem>
           </List>
@@ -757,9 +758,9 @@ const DocManagerDrawer = ({ drawerIn, open, setOpen }) => {
   };
 
   return (
-    <Slide direction='right' in={drawerIn}>
-      <Box sx={{ display: 'flex' }}>
-        <Drawer variant='permanent' open={open}>
+    <Slide direction="right" in={drawerIn}>
+      <Box sx={{ display: "flex" }}>
+        <Drawer variant="permanent" open={open}>
           <DrawerHeader>
             {open ? (
               <IconButton onClick={handleDrawerClose}>
@@ -773,152 +774,177 @@ const DocManagerDrawer = ({ drawerIn, open, setOpen }) => {
           </DrawerHeader>
           <Divider />
           <List>
-            <Link to='/doc-dashboard'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/doc-dashboard">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <Speed />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Dashboard'
+                    primary="Dashboard"
                   />
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link to='/invoices'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/invoices">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <Description />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Invoices'
+                    primary="Invoices"
                   />
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link to='/shipping-instructions'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/shipping-instructions">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <DirectionsBoat />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Shipment'
+                    primary="Shipment"
                   />
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link to='/packing-lists'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/packing-lists">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <LocalShipping />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Packing Lists'
+                    primary="Packing Lists"
                   />
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link to='/way-bills'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/way-bills">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <Sell />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Way Bills'
+                    primary="Way Bills"
                   />
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link to='/certificates'>
-              <ListItem disablePadding sx={{ display: 'block' }}>
+            <Link to="/certificates">
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
+                    justifyContent: open ? "initial" : "center",
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
                     <BrandingWatermark />
                   </ListItemIcon>
                   <ListItemText
                     sx={{ opacity: open ? 1 : 0 }}
-                    primary='Inland Cert.'
+                    primary="Inland Cert."
+                  />
+                </ListItemButton>
+              </ListItem>
+            </Link>
+            <Link to="/shipper-declerations">
+              <ListItem disablePadding sx={{ display: "block" }}>
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <FileOpen />
+                  </ListItemIcon>
+                  <ListItemText
+                    sx={{ opacity: open ? 1 : 0 }}
+                    primary="Shippers Dec."
                   />
                 </ListItemButton>
               </ListItem>
