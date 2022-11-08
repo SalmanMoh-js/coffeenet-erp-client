@@ -1,14 +1,14 @@
-import axios from 'axios';
-import { setAddLoading } from './adminActions';
-import { GET_ERRORS, BASE_URL, DATA_UPDATED } from './types';
+import axios from "axios";
+import { setAddLoading } from "./adminActions";
+import { GET_ERRORS, BASE_URL, DATA_UPDATED } from "./types";
 
 // Add invoice
 export const addInvoice = (invoice) => async (dispatch) => {
   dispatch(setAddLoading());
   const config = {
     headers: {
-      'Content-Type': 'application/json',
-      'x-auth-token': localStorage.getItem('token'),
+      "Content-Type": "application/json",
+      "x-auth-token": localStorage.getItem("token"),
     },
   };
 
@@ -21,7 +21,7 @@ export const addInvoice = (invoice) => async (dispatch) => {
     );
     dispatch({
       type: DATA_UPDATED,
-      payload: 'Invoice added',
+      payload: "Invoice added",
     });
   } catch (err) {
     dispatch({
@@ -36,8 +36,8 @@ export const addShipping = (shipping) => async (dispatch) => {
   dispatch(setAddLoading());
   const config = {
     headers: {
-      'Content-Type': 'application/json',
-      'x-auth-token': localStorage.getItem('token'),
+      "Content-Type": "application/json",
+      "x-auth-token": localStorage.getItem("token"),
     },
   };
 
@@ -50,7 +50,7 @@ export const addShipping = (shipping) => async (dispatch) => {
     );
     dispatch({
       type: DATA_UPDATED,
-      payload: 'Shipping added',
+      payload: "Shipping added",
     });
   } catch (err) {
     dispatch({
@@ -65,8 +65,8 @@ export const addPacking = (packing) => async (dispatch) => {
   dispatch(setAddLoading());
   const config = {
     headers: {
-      'Content-Type': 'application/json',
-      'x-auth-token': localStorage.getItem('token'),
+      "Content-Type": "application/json",
+      "x-auth-token": localStorage.getItem("token"),
     },
   };
 
@@ -79,7 +79,7 @@ export const addPacking = (packing) => async (dispatch) => {
     );
     dispatch({
       type: DATA_UPDATED,
-      payload: 'Packing list added',
+      payload: "Packing list added",
     });
   } catch (err) {
     dispatch({
@@ -94,8 +94,8 @@ export const addWaybill = (waybill) => async (dispatch) => {
   dispatch(setAddLoading());
   const config = {
     headers: {
-      'Content-Type': 'application/json',
-      'x-auth-token': localStorage.getItem('token'),
+      "Content-Type": "application/json",
+      "x-auth-token": localStorage.getItem("token"),
     },
   };
 
@@ -108,7 +108,7 @@ export const addWaybill = (waybill) => async (dispatch) => {
     );
     dispatch({
       type: DATA_UPDATED,
-      payload: 'Way bill added',
+      payload: "Way bill added",
     });
   } catch (err) {
     dispatch({
@@ -123,8 +123,8 @@ export const addCert = (cert) => async (dispatch) => {
   dispatch(setAddLoading());
   const config = {
     headers: {
-      'Content-Type': 'application/json',
-      'x-auth-token': localStorage.getItem('token'),
+      "Content-Type": "application/json",
+      "x-auth-token": localStorage.getItem("token"),
     },
   };
 
@@ -137,7 +137,36 @@ export const addCert = (cert) => async (dispatch) => {
     );
     dispatch({
       type: DATA_UPDATED,
-      payload: 'cert added',
+      payload: "cert added",
+    });
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data,
+    });
+  }
+};
+
+// Add ship Dec
+export const addShipDec = (shipDec) => async (dispatch) => {
+  dispatch(setAddLoading());
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      "x-auth-token": localStorage.getItem("token"),
+    },
+  };
+
+  const body = JSON.stringify(shipDec);
+  try {
+    const res = await axios.post(
+      `${BASE_URL}/api/document/add-ship-dec`,
+      body,
+      config
+    );
+    dispatch({
+      type: DATA_UPDATED,
+      payload: "shipDec added",
     });
   } catch (err) {
     dispatch({
