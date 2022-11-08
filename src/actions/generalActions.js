@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 import {
   GET_SAMPLES,
   GET_ERRORS,
@@ -14,15 +14,16 @@ import {
   GET_PACKING,
   GET_WAYBILLS,
   GET_CERTS,
-} from './types';
+  GET_SHIPDECS,
+} from "./types";
 
 // Get samples
 export const getSamples = () => async (dispatch) => {
   dispatch(setLoading());
   const config = {
     headers: {
-      'Content-Type': 'application/json',
-      'x-auth-token': localStorage.getItem('token'),
+      "Content-Type": "application/json",
+      "x-auth-token": localStorage.getItem("token"),
     },
   };
   try {
@@ -44,8 +45,8 @@ export const getOfficeMats = () => async (dispatch) => {
   dispatch(setLoading());
   const config = {
     headers: {
-      'Content-Type': 'application/json',
-      'x-auth-token': localStorage.getItem('token'),
+      "Content-Type": "application/json",
+      "x-auth-token": localStorage.getItem("token"),
     },
   };
   try {
@@ -67,8 +68,8 @@ export const getSites = () => async (dispatch) => {
   dispatch(setLoading());
   const config = {
     headers: {
-      'Content-Type': 'application/json',
-      'x-auth-token': localStorage.getItem('token'),
+      "Content-Type": "application/json",
+      "x-auth-token": localStorage.getItem("token"),
     },
   };
   try {
@@ -92,8 +93,8 @@ export const getMyPcrs =
     dispatch(setLoading());
     const config = {
       headers: {
-        'Content-Type': 'application/json',
-        'x-auth-token': localStorage.getItem('token'),
+        "Content-Type": "application/json",
+        "x-auth-token": localStorage.getItem("token"),
       },
     };
     try {
@@ -115,8 +116,8 @@ export const getCuppings = () => async (dispatch) => {
   dispatch(setLoading());
   const config = {
     headers: {
-      'Content-Type': 'application/json',
-      'x-auth-token': localStorage.getItem('token'),
+      "Content-Type": "application/json",
+      "x-auth-token": localStorage.getItem("token"),
     },
   };
   try {
@@ -138,8 +139,8 @@ export const getInvoices = () => async (dispatch) => {
   dispatch(setLoading());
   const config = {
     headers: {
-      'Content-Type': 'application/json',
-      'x-auth-token': localStorage.getItem('token'),
+      "Content-Type": "application/json",
+      "x-auth-token": localStorage.getItem("token"),
     },
   };
   try {
@@ -161,8 +162,8 @@ export const getShippings = () => async (dispatch) => {
   dispatch(setLoading());
   const config = {
     headers: {
-      'Content-Type': 'application/json',
-      'x-auth-token': localStorage.getItem('token'),
+      "Content-Type": "application/json",
+      "x-auth-token": localStorage.getItem("token"),
     },
   };
   try {
@@ -184,8 +185,8 @@ export const getPackings = () => async (dispatch) => {
   dispatch(setLoading());
   const config = {
     headers: {
-      'Content-Type': 'application/json',
-      'x-auth-token': localStorage.getItem('token'),
+      "Content-Type": "application/json",
+      "x-auth-token": localStorage.getItem("token"),
     },
   };
   try {
@@ -207,8 +208,8 @@ export const getWaybills = () => async (dispatch) => {
   dispatch(setLoading());
   const config = {
     headers: {
-      'Content-Type': 'application/json',
-      'x-auth-token': localStorage.getItem('token'),
+      "Content-Type": "application/json",
+      "x-auth-token": localStorage.getItem("token"),
     },
   };
   try {
@@ -230,14 +231,37 @@ export const getCerts = () => async (dispatch) => {
   dispatch(setLoading());
   const config = {
     headers: {
-      'Content-Type': 'application/json',
-      'x-auth-token': localStorage.getItem('token'),
+      "Content-Type": "application/json",
+      "x-auth-token": localStorage.getItem("token"),
     },
   };
   try {
     const res = await axios.get(`${BASE_URL}/api/document/certs`, config);
     dispatch({
       type: GET_CERTS,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data,
+    });
+  }
+};
+
+// Get Shipping Declerations
+export const getShipDecs = () => async (dispatch) => {
+  dispatch(setLoading());
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      "x-auth-token": localStorage.getItem("token"),
+    },
+  };
+  try {
+    const res = await axios.get(`${BASE_URL}/api/document/ship-decs`, config);
+    dispatch({
+      type: GET_SHIPDECS,
       payload: res.data,
     });
   } catch (err) {
