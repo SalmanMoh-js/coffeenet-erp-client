@@ -120,7 +120,7 @@ function PackingLists() {
         <>
           <div
             className='h-screen w-fit overflow-auto'
-            style={{ marginLeft: '5%' }}
+            style={{ marginLeft: '15%' }}
           >
             {selectedPackingList ? (
               <Grid
