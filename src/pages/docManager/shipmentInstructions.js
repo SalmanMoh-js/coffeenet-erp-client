@@ -1,75 +1,68 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Grid,
   Button,
-  LinearProgress,
+  TextField,
+  InputAdornment,
   IconButton,
-  Modal,
-  Fab,
-  TableContainer,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  tableCellClasses,
 } from '@mui/material';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { Close, NoteAdd, Print } from '@mui/icons-material';
-import { BootstrapTooltip } from '../../components/admin/accountsList';
-import { emptyErrors, getShippings } from '../../actions/generalActions';
-import { CustomNoRowsOverlay } from '../../components/noRowsOverlay';
-import ReactToPrint from 'react-to-print';
-import { toast, ToastContainer } from 'react-toastify';
-import { fabStyle } from '../admin/cuppingAdmin';
+import { LoadingButton } from '@mui/lab';
+import { Description, Send, RestartAltRounded } from '@mui/icons-material';
+import { addShipping } from '../../actions/docmanagerActions';
+import { emptyErrors, resetUpdate } from '../../actions/generalActions';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-function ShippingInstructionsList() {
+function ShipmentInstructions() {
   const { isDocmanagerAuthenticated } = useSelector((state) => state.auth);
-  const { shippingInstructions, loading } = useSelector(
+  const { addDataLoading, dataUpdated } = useSelector(
     (state) => state.adminData
   );
   const errors = useSelector((state) => state.errors);
-  const [selectedShipment, setSelectedShipment] = useState(null);
-  const [invoiceModalOpen, setInvoiceModalOpen] = useState(false);
-  const toBePrinted = useRef(null);
+  const Day = new Date();
+  const newDate = `${Day.getDate()}/${Day.getMonth() + 1}/${Day.getFullYear()}`;
+  const [shipment, setShipment] = useState({
+    consigne: '',
+    notifParty: '',
+    address: '',
+    shipment: '',
+    portOfLoad: '',
+    portOfDischarge: '',
+    bookingNo: '',
+    shippingLine: '',
+    name: '',
+    certNumbers: '',
+    mnNetWeight: '',
+    destination: '',
+    description: '',
+    icoNumber: '',
+    hsCode: '',
+    descNetWeight: '',
+    packing: '',
+    noOfBags: '',
+    netWeight: '',
+    grossWeight: '',
+    transportation: '',
+    date: newDate,
+  });
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  function onPrint(selectedRow) {
-    selectedRow.certNumbers = selectedRow.certNumbers.split(',');
-    setSelectedShipment(selectedRow);
-    setInvoiceModalOpen(true);
+  const [validated, setValidated] = useState(false);
+  function onAddShippment(e) {
+    e.preventDefault();
+    let newObj = shipment;
+    newObj.createdAt = new Date().getTime();
+    setShipment(newObj);
+    dispatch(addShipping(shipment));
   }
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'Coffee Type', width: 200 },
-    { field: 'date', headerName: 'Date', width: 130 },
-    {
-      field: 'action',
-      headerName: 'Print',
-      sortable: false,
-      renderCell: (params) => {
-        return (
-          <div className='w-full flex justify-center'>
-            <BootstrapTooltip title='Print'>
-              <IconButton size='small' onClick={() => onPrint(params.row)}>
-                <Print />
-              </IconButton>
-            </BootstrapTooltip>
-          </div>
-        );
-      },
-    },
-  ];
+
   useEffect(() => {
     if (!isDocmanagerAuthenticated) {
       navigate('/');
     }
   }, [isDocmanagerAuthenticated, navigate]);
-  useEffect(() => {
-    dispatch(getShippings());
-  }, [dispatch]);
   useEffect(() => {
     const toastOptions = {
       position: 'top-right',
@@ -85,305 +78,503 @@ function ShippingInstructionsList() {
       }, 8000);
     }
   }, [errors, dispatch]);
+  useEffect(() => {
+    const toastOptions = {
+      position: 'top-right',
+      autoClose: 5000,
+      pauseOnHover: true,
+      draggable: true,
+      theme: 'light',
+    };
+    if (dataUpdated === 'Shipping added') {
+      toast.success('Shipping Instruction submitted', toastOptions);
+      setTimeout(() => {
+        dispatch(resetUpdate());
+      }, 8000);
+    }
+  }, [dataUpdated, dispatch]);
+  useEffect(() => {
+    setValidated(
+      Object.values(shipment).every((value) => {
+        if (!value.toString().trim().length || value === 0) {
+          return false;
+        }
+        return true;
+      })
+    );
+  }, [shipment]);
+  useEffect(() => {
+    if (!isDocmanagerAuthenticated) {
+      navigate('/');
+    }
+  }, [isDocmanagerAuthenticated, navigate]);
   return (
     <>
       <Grid container className='dashboard-container justify-around'>
-        <Grid className='accounts-list-container w-full -mt-3'>
-          <div className='w-full flex flex-row justify-between mb-2'>
-            <p className='h4 text-left'>Shipping Instructions</p>
-            <div>
-              <Button
-                startIcon={<NoteAdd />}
-                variant='contained'
-                onClick={() => navigate('/new-shipping')}
-              >
-                Add Shipping Instruction
-              </Button>
-            </div>
-          </div>
-          <DataGrid
-            className='bg-white p-4'
-            rows={shippingInstructions}
-            columns={columns}
-            components={{
-              Toolbar: GridToolbar,
-              NoRowsOverlay: CustomNoRowsOverlay,
-              LoadingOverlay: LinearProgress,
-            }}
-            componentsProps={{
-              toolbar: { showQuickFilter: true },
-            }}
-            loading={loading}
-          />
-        </Grid>
-      </Grid>
-      <Modal open={invoiceModalOpen} onClose={() => setInvoiceModalOpen(false)}>
-        <>
-          <div
-            className='h-screen w-fit overflow-auto'
-            style={{ marginLeft: '20%' }}
-          >
-            {selectedShipment ? (
-              <Grid
-                className='invoice-layout-container w-4/5 mx-auto bg-white overflow-hidden'
-                ref={toBePrinted}
-              >
-                <Grid className='title-container w-full text-center mb-6 mt-10'>
-                  <p className='h3 font-bold underline text-center text-black'>
-                    Shipment Instruction
-                  </p>
-                </Grid>
-                <TableContainer
-                  component={Paper}
-                  sx={{
-                    height: '95%',
+        <form onSubmit={onAddShippment} className='w-full'>
+          <Grid className='accounts-list-container w-full -mt-3'>
+            <div className='w-full flex flex-row justify-between mb-2'>
+              <p className='h4 text-left'>Shipping Instruction</p>
+              <div className='flex flex-row'>
+                <IconButton
+                  variant='contained'
+                  onClick={() => {
+                    setShipment({
+                      consigne: '',
+                      notifParty: '',
+                      address: '',
+                      shipment: '',
+                      portOfLoad: '',
+                      portOfDischarge: '',
+                      bookingNo: '',
+                      shippingLine: '',
+                      name: '',
+                      certNumbers: '',
+                      mnNetWeight: '',
+                      destination: '',
+                      description: '',
+                      icoNumber: '',
+                      hsCode: '',
+                      descNetWeight: '',
+                      packing: '',
+                      noOfBags: '',
+                      netWeight: '',
+                      grossWeight: '',
+                      transportation: '',
+                    });
                   }}
-                  className='shadow-none'
                 >
-                  <Table
-                    size='small'
-                    sx={{
-                      [`& .${tableCellClasses.root}`]: {
-                        borderBottom: 'none',
-                      },
-                    }}
-                    className='shadow-none'
+                  <RestartAltRounded />
+                </IconButton>
+                <LoadingButton
+                  type='submit'
+                  variant='contained'
+                  loading={addDataLoading}
+                  sx={{
+                    mr: 5,
+                    ml: 5,
+                  }}
+                  disabled={!validated}
+                  startIcon={<Send />}
+                >
+                  Submit
+                </LoadingButton>
+                <div>
+                  <Button
+                    startIcon={<Description />}
+                    variant='contained'
+                    onClick={() => navigate('/shipping-instructions')}
                   >
-                    <TableBody sx={{ width: '100%' }}>
-                      <TableRow>
-                        <TableCell
-                          sx={{ width: '100%' }}
-                          className='border-none'
-                        >
-                          <strong>Name: </strong>
-                          COFFEENET TRADING PLC
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ width: '100%' }}>
-                          <strong>TEL: </strong>
-                          +251913128964
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ width: '100%' }}>
-                          <strong>EMAIL: </strong>
-                          coffeenet@gmail.com
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ width: '100%' }}>
-                          <strong>PO BOX: </strong>
-                          N/A
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ width: '100%' }}>
-                          <strong>CITY, COUNTRY: </strong>
-                          Addis Ababa, Ethiopia
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ width: '100%' }}>
-                          <strong>CONSIGNEE: </strong>
-                          {selectedShipment.consigne}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ width: '100%' }}>
-                          <strong>NOFIFY PARTY: </strong>
-                          {selectedShipment.notifParty}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ width: '100%' }}>
-                          <strong>ADDRESS: </strong>
-                          {selectedShipment.address}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ width: '100%' }}>
-                          <strong>SHIPMENT: </strong>
-                          {selectedShipment.shipment}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ width: '100%' }}>
-                          <strong>PORT OF LOADING: </strong>
-                          {selectedShipment.portOfLoad}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ width: '100%' }}>
-                          <strong>PORT OF DISCHARGE: </strong>
-                          {selectedShipment.portOfDischarge}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ width: '100%' }}>
-                          {selectedShipment.shippingLine}
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                  <Table
-                    size='small'
-                    sx={{
-                      [`& .${tableCellClasses.root}`]: {
-                        borderBottom: 'none',
-                        borderRight: '1px solid gray',
-                      },
-                    }}
-                  >
-                    <TableRow className='border border-black'>
-                      <TableCell className='max-w-xs w-48'>
-                        <strong>Marks and Numbers</strong>
-                      </TableCell>
-                      <TableCell>
-                        <strong>Package</strong>
-                      </TableCell>
-                      <TableCell>
-                        <strong>Description of Packages and Goods</strong>
-                      </TableCell>
-                      <TableCell>
-                        <strong>Net Weight(Kg)</strong>
-                      </TableCell>
-                      <TableCell>
-                        <strong>Gross Weight(Kg)</strong>
-                      </TableCell>
-                    </TableRow>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell>{selectedShipment.name}</TableCell>
-                        <TableCell>{selectedShipment.noOfBags} Bags</TableCell>
-                        <TableCell>{selectedShipment.description}</TableCell>
-                        <TableCell>{selectedShipment.netWeight} KGs</TableCell>
-                        <TableCell>
-                          {selectedShipment.grossWeight} KGs
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        {selectedShipment.certNumbers.map((cert) => {
-                          return (
-                            <>
-                              <TableCell>
-                                <p>
-                                  <strong>CERT #: </strong>
-                                  {cert}
-                                </p>
-                              </TableCell>
-                              <TableCell></TableCell>
-                              <TableCell>
-                                <p>
-                                  <strong>CERT #: </strong>
-                                  {cert}
-                                </p>
-                              </TableCell>
-                            </>
-                          );
-                        })}
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className='min-w-fit'>
-                          <p>
-                            <strong>NET WEIGHT: </strong>
-                            {selectedShipment.mnNetWeight} KGs
-                          </p>
-                        </TableCell>
-                        <TableCell></TableCell>
-                        <TableCell>
-                          <p>
-                            <strong>ICO #: </strong>
-                            {selectedShipment.icoNumber}Kg
-                          </p>
-                        </TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>
-                          <p>
-                            <strong>Destination: </strong>
-                            {selectedShipment.destination}
-                          </p>
-                        </TableCell>
-                        <TableCell></TableCell>
-                        <TableCell>
-                          <p>
-                            <strong>HS CODE: </strong>
-                            {selectedShipment.hsCode}
-                          </p>
-                        </TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell>
-                          <p>
-                            <strong>Net Weight: </strong>
-                            {selectedShipment.descNetWeight} KGs
-                          </p>
-                        </TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell>
-                          <p>
-                            <strong>Packing: </strong>
-                            {selectedShipment.packing}
-                          </p>
-                        </TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                      </TableRow>
-                    </TableBody>
-                    <TableRow className='border border-black'>
-                      <TableCell colSpan={2}></TableCell>
-                      <TableCell>
-                        <strong>{selectedShipment.transportation}</strong>
-                      </TableCell>
-                      <TableCell colSpan={2}>
-                        <p>
-                          <strong>Total Net Weight: </strong>
-                          {selectedShipment.descNetWeight} KGs
+                    View Shipping Instructions
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Grid>
+          <Grid
+            className='invoice-layout-container w-full bg-white p-6 overflow-auto'
+            style={{ height: '70vh' }}
+          >
+            <Grid className='title-container w-full text-center mb-8'>
+              <p className='h4 underline text-center text-gray-700'>
+                Shipping Instruction
+              </p>
+            </Grid>
+            <Grid className='w-full'>
+              <Grid
+                container
+                spacing={2}
+                className='invoice-form-container w-full h-fit'
+              >
+                <Grid item lg={6}>
+                  <div className='full'>
+                    <Grid container spacing={2} className='w-full'>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <p className='h5 text-center font-bold'>
+                          Shipping Details
                         </p>
-                      </TableCell>
-                    </TableRow>
-                  </Table>
-                </TableContainer>
+                      </Grid>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='text'
+                          value={shipment.consigne}
+                          autoComplete='false'
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              consigne: e.target.value,
+                            })
+                          }
+                          label='CONSIGNEE'
+                        />
+                      </Grid>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='text'
+                          value={shipment.notifParty}
+                          autoComplete='false'
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              notifParty: e.target.value,
+                            })
+                          }
+                          label='Notify Party'
+                        />
+                      </Grid>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='text'
+                          value={shipment.address}
+                          autoComplete='false'
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              address: e.target.value,
+                            })
+                          }
+                          label='Address'
+                        />
+                      </Grid>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='text'
+                          value={shipment.shipment}
+                          autoComplete='false'
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              shipment: e.target.value,
+                            })
+                          }
+                          label='Shipment'
+                        />
+                      </Grid>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='text'
+                          value={shipment.portOfLoad}
+                          autoComplete='false'
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              portOfLoad: e.target.value,
+                            })
+                          }
+                          label='Port of Loading'
+                        />
+                      </Grid>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='text'
+                          value={shipment.portOfDischarge}
+                          autoComplete='false'
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              portOfDischarge: e.target.value,
+                            })
+                          }
+                          label='Port of Discharge'
+                        />
+                      </Grid>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='text'
+                          value={shipment.bookingNo}
+                          autoComplete='false'
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              bookingNo: e.target.value,
+                            })
+                          }
+                          label='Booking Number'
+                        />
+                      </Grid>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='text'
+                          value={shipment.shippingLine}
+                          autoComplete='false'
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              shippingLine: e.target.value,
+                            })
+                          }
+                          label='Shipping Line'
+                        />
+                      </Grid>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <p className='h5 text-center font-bold'>
+                          Description of Packages and Goods
+                        </p>
+                      </Grid>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='text'
+                          multiline
+                          minRows={3}
+                          value={shipment.description}
+                          autoComplete='false'
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              description: e.target.value,
+                            })
+                          }
+                          label='Description'
+                        />
+                      </Grid>
+                      <Grid item lg={6} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='text'
+                          value={shipment.icoNumber}
+                          autoComplete='false'
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              icoNumber: e.target.value,
+                            })
+                          }
+                          label='ICO#'
+                        />
+                      </Grid>
+                      <Grid item lg={6} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='text'
+                          value={shipment.hsCode}
+                          autoComplete='false'
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              hsCode: e.target.value,
+                            })
+                          }
+                          label='HS CODE'
+                        />
+                      </Grid>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='number'
+                          value={shipment.descNetWeight}
+                          autoComplete='false'
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position='start'>
+                                kg
+                              </InputAdornment>
+                            ),
+                          }}
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              descNetWeight: e.target.value,
+                            })
+                          }
+                          label='Net Weight'
+                        />
+                      </Grid>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='text'
+                          multiline
+                          minRows={3}
+                          value={shipment.packing}
+                          autoComplete='false'
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              packing: e.target.value,
+                            })
+                          }
+                          label='Packing'
+                        />
+                      </Grid>
+                    </Grid>
+                  </div>
+                </Grid>
+                <Grid item lg={6}>
+                  <div className='full'>
+                    <Grid container spacing={2} className='w-full'>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <p className='h5 text-center font-bold'>
+                          Marks and Numbers
+                        </p>
+                      </Grid>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='text'
+                          multiline
+                          minRows={2}
+                          value={shipment.name}
+                          autoComplete='false'
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              name: e.target.value,
+                            })
+                          }
+                          label='Coffee Type'
+                        />
+                      </Grid>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='text'
+                          value={shipment.certNumbers}
+                          autoComplete='false'
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              certNumbers: e.target.value,
+                            })
+                          }
+                          label='CERT Numbers (separated by comma)'
+                        />
+                      </Grid>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='number'
+                          value={shipment.mnNetWeight}
+                          autoComplete='false'
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position='start'>
+                                kg
+                              </InputAdornment>
+                            ),
+                          }}
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              mnNetWeight: e.target.value,
+                            })
+                          }
+                          label='Net Weight'
+                        />
+                      </Grid>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='text'
+                          value={shipment.destination}
+                          autoComplete='false'
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              destination: e.target.value,
+                            })
+                          }
+                          label='Destination'
+                        />
+                      </Grid>
+                      <Grid item lg={12} className='flex justify-center'>
+                        <p className='h5 text-center font-bold'>
+                          Package, Weight & Transport Details
+                        </p>
+                      </Grid>
+                      <Grid item lg={6} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='number'
+                          value={shipment.grossWeight}
+                          autoComplete='false'
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position='start'>
+                                kg
+                              </InputAdornment>
+                            ),
+                          }}
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              grossWeight: e.target.value,
+                            })
+                          }
+                          label='Gross Weight'
+                        />
+                      </Grid>
+                      <Grid item lg={6} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='number'
+                          value={shipment.netWeight}
+                          autoComplete='false'
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position='start'>
+                                kg
+                              </InputAdornment>
+                            ),
+                          }}
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              netWeight: e.target.value,
+                            })
+                          }
+                          label='Net Weight'
+                        />
+                      </Grid>
+                      <Grid item lg={6} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='number'
+                          value={shipment.noOfBags}
+                          autoComplete='false'
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              noOfBags: e.target.value,
+                            })
+                          }
+                          label='Number of Bags'
+                        />
+                      </Grid>
+                      <Grid item lg={6} className='flex justify-center'>
+                        <TextField
+                          className='w-full'
+                          type='text'
+                          value={shipment.transportation}
+                          autoComplete='false'
+                          onChange={(e) =>
+                            setShipment({
+                              ...shipment,
+                              transportation: e.target.value,
+                            })
+                          }
+                          label='Transportation'
+                        />
+                      </Grid>
+                    </Grid>
+                  </div>
+                </Grid>
               </Grid>
-            ) : null}
-            <IconButton
-              sx={{ position: 'fixed', right: 20, top: 20, color: 'white' }}
-              onClick={() => setInvoiceModalOpen(false)}
-            >
-              <Close fontSize='large' color='inherit' />
-            </IconButton>
-            <ReactToPrint
-              trigger={() => {
-                return (
-                  <BootstrapTooltip title='Print' placement='top'>
-                    <Fab color='primary' sx={fabStyle}>
-                      <Print />
-                    </Fab>
-                  </BootstrapTooltip>
-                );
-              }}
-              content={() => toBePrinted.current}
-            />
-          </div>
-        </>
-      </Modal>
+            </Grid>
+          </Grid>
+        </form>
+      </Grid>
       <ToastContainer />
     </>
   );
 }
 
-export default ShippingInstructionsList;
+export default ShipmentInstructions;
