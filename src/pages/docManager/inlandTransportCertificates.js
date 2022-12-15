@@ -119,7 +119,7 @@ function InlandTransportCertificates() {
         <>
           <div
             className='h-screen w-fit overflow-auto'
-            style={{ marginLeft: '5%' }}
+            style={{ marginLeft: '10%' }}
           >
             {selectedCertificate ? (
               <Grid
